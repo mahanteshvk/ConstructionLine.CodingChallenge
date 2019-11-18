@@ -12,7 +12,6 @@ namespace ConstructionLine.CodingChallenge
         {
             _shirts = shirts;
             // TODO: data preparation and initialisation of additional data structures to improve performance goes here.
-
         }
 
         public SearchResults Search(SearchOptions options)
@@ -24,7 +23,7 @@ namespace ConstructionLine.CodingChallenge
            
             return new SearchResults
             {
-                ColorCounts = GetColorCount(options),
+                ColorCounts = GetColorCounts(options),
                 Shirts = results,
                 SizeCounts = GetSizeCounts(options)
             };
@@ -48,7 +47,7 @@ namespace ConstructionLine.CodingChallenge
             return sizeCounts;
         }
 
-        private List<ColorCount> GetColorCount(SearchOptions options)
+        private List<ColorCount> GetColorCounts(SearchOptions options)
         {
             var colorCounts = new List<ColorCount>();
             Parallel.ForEach(Color.All, color =>
