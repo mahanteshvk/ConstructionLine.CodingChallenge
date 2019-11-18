@@ -23,33 +23,36 @@ namespace ConstructionLine.CodingChallenge
            
             return new SearchResults
             {
-                ColorCounts = GetColorCounts(options),
+                ColorCounts = GetColorCounts(options).ToList(),
                 Shirts = results,
-                SizeCounts = GetSizeCounts(options)
+                SizeCounts = GetSizeCounts(options).ToList()
             };
         }
 
-        private List<SizeCount> GetSizeCounts(SearchOptions options)
+        private ConcurrentBag<SizeCount> GetSizeCounts(SearchOptions options)
         {
-            var sizeCounts = new List<SizeCount>();
+          
+            var sizeCounts = new ConcurrentBag<SizeCount>();
             Parallel.ForEach(Size.All, size =>
-            {                
+            {
                 sizeCounts.Add(new SizeCount()
                 {
                     Size = size,
                     Count = _shirts
-                                .Count(s => s.Size.Id == size.Id
-                                && (!options.Colors.Any() || 
-                                     options.Colors.Select(c => c.Id).Contains(s.Color.Id)))
+                                    .Count(s => s.Size.Id == size.Id
+                                    && (!options.Colors.Any() ||
+                                         options.Colors.Select(c => c.Id).Contains(s.Color.Id)))
                 });
             });
+
 
             return sizeCounts;
         }
 
-        private List<ColorCount> GetColorCounts(SearchOptions options)
+        private ConcurrentBag<ColorCount> GetColorCounts(SearchOptions options)
         {
-            var colorCounts = new List<ColorCount>();
+            
+            var colorCounts = new ConcurrentBag<ColorCount>();
             Parallel.ForEach(Color.All, color =>
             {
                 colorCounts.Add(new ColorCount()
@@ -57,12 +60,13 @@ namespace ConstructionLine.CodingChallenge
                     Color = color,
                     Count = _shirts
                                 .Count(c => c.Color.Id == color.Id
-                                && (!options.Sizes.Any() ||                                     
+                                && (!options.Sizes.Any() ||
                                      options.Sizes.Select(s => s.Id).Contains(c.Size.Id)))
                 });
             });
 
             return colorCounts;
+
         }
     }
 }
